@@ -1,5 +1,5 @@
 ﻿
-# Depotnet Technical Challenge
+# Technical Challenge
 
 ### Database setup
 Please follow the instruction to download and setup Northwind DB for SQL Server here:
