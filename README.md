@@ -14,7 +14,7 @@ The current functionality works, but could be better. Using your knowledge of OO
 - If you would have made a different design decision for production, then comment or document it
 - We love high-value unit tests which test the right things!
 - We are more interested in your design decisions, code layout and approach (be prepared to explain this).
-- Please upload your code to github (either public or private) then invite [quoc.nguyen@depotnet.co.uk]()
+- Please upload your code to github (either public or private) then invite [nguyenminhkuoc@gmail.com]()
 
 #### README.md
 Please describe all information in the file README.md:
