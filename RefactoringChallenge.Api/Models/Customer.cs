@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RefactoringChallenge.Entities
+namespace RefactoringChallenge.Models
 {
     public partial class Customer
     {

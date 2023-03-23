@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RefactoringChallenge.Entities
+namespace RefactoringChallenge.Models
 {
     public partial class Employee
     {

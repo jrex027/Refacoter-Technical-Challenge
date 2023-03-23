@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RefactoringChallenge.Models;
 
 namespace RefactoringChallenge.Entities
 {

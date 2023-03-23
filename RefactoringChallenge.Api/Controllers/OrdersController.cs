@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using RefactoringChallenge.Models;
+using RefactoringChallenge.Services;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Mapster;
-using MapsterMapper;
-using Microsoft.AspNetCore.Mvc;
-using RefactoringChallenge.Entities;
+using System.Threading.Tasks;
 
 namespace RefactoringChallenge.Controllers
 {
@@ -12,133 +11,90 @@ namespace RefactoringChallenge.Controllers
     [Route("[controller]")]
     public class OrdersController : Controller
     {
-        private readonly NorthwindDbContext _northwindDbContext;
-        private readonly IMapper _mapper;
+        // Implement the Service Layer
+        private readonly IOrdersService _ordersService;
 
-        public OrdersController(NorthwindDbContext northwindDbContext, IMapper mapper)
+        public OrdersController(IOrdersService ordersService)
         {
-            _northwindDbContext = northwindDbContext;
-            _mapper = mapper;
+            _ordersService = ordersService;
         }
 
         [HttpGet]
-        public IActionResult Get(int? skip = null, int? take = null)
+        public async Task<IActionResult> Get(int? skip = null, int? take = null)
         {
-            var query = _northwindDbContext.Orders;
-            if (skip != null)
+            try
             {
-                query.Skip(skip.Value);
+                var orders = await _ordersService.GetOrder(skip, take);
+                return Ok(orders);
             }
-            if (take != null)
+            catch (Exception ex) 
             {
-                query.Take(take.Value);
+                // Send the error response with 500 status code
+                return StatusCode(500, ex.Message);
             }
-            var result = _mapper.From(query).ProjectToType<OrderResponse>().ToList();
-            return Json(result);
         }
 
 
         [HttpGet("{orderId}")]
-        public IActionResult GetById([FromRoute] int orderId)
+        public async Task<IActionResult> GetById([FromRoute] int orderId)
         {
-            var result = _mapper.From(_northwindDbContext.Orders).ProjectToType<OrderResponse>().FirstOrDefault(o => o.OrderId == orderId);
-
-            if (result == null)
-                return NotFound();
-
-            return Json(result);
+            try
+            {
+                var order = await _ordersService.GetOrderById(orderId);
+                if (order == null)
+                    return NotFound();
+                // Implement Http status code instead of JsonResult
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("[action]")]
-        public IActionResult Create(
-            string customerId,
-            int? employeeId,
-            DateTime? requiredDate,
-            int? shipVia,
-            decimal? freight,
-            string shipName,
-            string shipAddress,
-            string shipCity,
-            string shipRegion,
-            string shipPostalCode,
-            string shipCountry,
-            IEnumerable<OrderDetailRequest> orderDetails
-            )
+        public async Task<IActionResult> Create(OrderRequest orderRequest)
         {
-            var newOrderDetails = new List<OrderDetail>();
-            foreach (var orderDetail in orderDetails)
+            try
             {
-                newOrderDetails.Add(new OrderDetail
-                {
-                    ProductId = orderDetail.ProductId,
-                    Discount = orderDetail.Discount,
-                    Quantity = orderDetail.Quantity,
-                    UnitPrice = orderDetail.UnitPrice,
-                });
+                var order = await _ordersService.CreateOrder(orderRequest);
+                return CreatedAtAction(nameof(GetById), new { orderId = order.OrderId }, order);
             }
-
-            var newOrder = new Order
+            catch (Exception ex)
             {
-                CustomerId = customerId,
-                EmployeeId = employeeId,
-                OrderDate = DateTime.Now,
-                RequiredDate = requiredDate,
-                ShipVia = shipVia,
-                Freight = freight,
-                ShipName = shipName,
-                ShipAddress = shipAddress,
-                ShipCity = shipCity,
-                ShipRegion = shipRegion,
-                ShipPostalCode = shipPostalCode,
-                ShipCountry = shipCountry,
-                OrderDetails = newOrderDetails,
-            };
-            _northwindDbContext.Orders.Add(newOrder);
-            _northwindDbContext.SaveChanges();
-
-            return Json(newOrder.Adapt<OrderResponse>());
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("{orderId}/[action]")]
-        public IActionResult AddProductsToOrder([FromRoute] int orderId, IEnumerable<OrderDetailRequest> orderDetails)
+        public async Task<IActionResult> AddProductsToOrder([FromRoute] int orderId, IEnumerable<OrderDetailRequest> orderDetails)
         {
-            var order = _northwindDbContext.Orders.FirstOrDefault(o => o.OrderId == orderId);
-            if (order == null)
-                return NotFound();
-
-            var newOrderDetails = new List<OrderDetail>();
-            foreach (var orderDetail in orderDetails)
+            try
             {
-                newOrderDetails.Add(new OrderDetail
-                {
-                    OrderId = orderId,
-                    ProductId = orderDetail.ProductId,
-                    Discount = orderDetail.Discount,
-                    Quantity = orderDetail.Quantity,
-                    UnitPrice = orderDetail.UnitPrice,
-                });
+                var orderDetailsResponses = await _ordersService.AddProductsToOrder(orderId, orderDetails);
+                return Ok(orderDetailsResponses);
             }
-
-            _northwindDbContext.OrderDetails.AddRange(newOrderDetails);
-            _northwindDbContext.SaveChanges();
-
-            return Json(newOrderDetails.Select(od => od.Adapt<OrderDetailResponse>()));
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPost("{orderId}/[action]")]
-        public IActionResult Delete([FromRoute] int orderId)
+        [HttpDelete("{orderId}/[action]")]
+        public async Task<IActionResult> Delete([FromRoute] int orderId)
         {
-            var order = _northwindDbContext.Orders.FirstOrDefault(o => o.OrderId == orderId);
-            if (order == null)
-                return NotFound();
-
-            var orderDetails = _northwindDbContext.OrderDetails.Where(od => od.OrderId == orderId);
-
-            _northwindDbContext.OrderDetails.RemoveRange(orderDetails);
-            _northwindDbContext.Orders.Remove(order);
-            _northwindDbContext.SaveChanges();
-
-            return Ok();
+            try
+            {
+                var result = await _ordersService.DeleteOrder(orderId);
+                if (result)
+                    return Ok();
+                else
+                    return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

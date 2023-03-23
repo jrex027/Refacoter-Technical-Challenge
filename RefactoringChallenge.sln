@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31727.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RefactoringChallenge", "RefactoringChallenge.Api\RefactoringChallenge.csproj", "{4A5B07A9-D97E-4E4E-AEA6-4B83F70181AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefactoringChallenge.Tests", "RefactoringChallenge.Tests\RefactoringChallenge.Tests.csproj", "{30590F01-C3C1-48EF-9752-C7DBFABB283B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4A5B07A9-D97E-4E4E-AEA6-4B83F70181AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A5B07A9-D97E-4E4E-AEA6-4B83F70181AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A5B07A9-D97E-4E4E-AEA6-4B83F70181AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30590F01-C3C1-48EF-9752-C7DBFABB283B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30590F01-C3C1-48EF-9752-C7DBFABB283B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30590F01-C3C1-48EF-9752-C7DBFABB283B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30590F01-C3C1-48EF-9752-C7DBFABB283B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

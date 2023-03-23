@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RefactoringChallenge.Entities;
+using RefactoringChallenge.Services;
 
 namespace RefactoringChallenge
 {
@@ -26,6 +27,9 @@ namespace RefactoringChallenge
 
             services.AddSingleton(TypeAdapterConfig.GlobalSettings);
             services.AddScoped<IMapper, ServiceMapper>();
+
+            //Inject the service layer
+            services.AddTransient<IOrdersService, OrdersService>();
 
             services.AddControllers();
 

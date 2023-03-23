@@ -1,4 +1,4 @@
-﻿namespace RefactoringChallenge.Controllers
+﻿namespace RefactoringChallenge.Models
 {
     public class OrderDetailResponse
     {
